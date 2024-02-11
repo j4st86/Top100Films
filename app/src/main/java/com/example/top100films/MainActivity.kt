@@ -22,41 +22,8 @@ class MainActivity : AppCompatActivity() {
 
         val favoriteButton: Button = findViewById(R.id.favoriteButton)
         favoriteButton.setOnClickListener {
-            val intent = Intent(this, FavoriteActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            startActivity(intent)
+            viewModel.getFilms()
         }
-        observeInternetConnection()
-    }
 
-
-    private fun observeInternetConnection() {
-        viewModel.hasInternetConnection.observe(this) { hasInternetConnection ->
-            val noInternetImage: ImageView = findViewById(R.id.no_internet_iv)
-            val noInternetText: TextView = findViewById(R.id.error_text_tv)
-            if (!hasInternetConnection) {
-                noInternetImage.setImageResource(R.drawable.no_internet_img)
-
-                noInternetText.text =
-                    "Произошла ошибка при загрузке данных, проверьте подключение к сети"
-
-                val retryButton: Button = findViewById(R.id.retryButton)
-                retryButton.setOnClickListener {
-                    viewModel.hasInternetConnection.observe(this) { hasInternetConnection ->
-                        if (!hasInternetConnection) {
-                            Toast.makeText(this@MainActivity, "Все еще ошибка", Toast.LENGTH_SHORT)
-                                .show()
-
-                        } else {
-                            noInternetImage.setImageDrawable(null)
-                            noInternetText.text = null
-                        }
-                    }
-                }
-            } else {
-                noInternetImage.setImageDrawable(null)
-                noInternetText.text = null
-            }
-        }
     }
 }
